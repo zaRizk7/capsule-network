@@ -9,7 +9,8 @@ VALID_ACTIVATIONS = ['linear', 'dr', 'sa']
 
 
 class Squash(keras.layers.Layer):
-    def __init__(self, activation: Optional[str] = 'linear', ord: Optional[Union[str,int]] = 'euclidean', axis: Optional[int] = -1,
+    def __init__(self, activation: Optional[str] = 'linear', ord: Optional[Union[str, int]] = 'euclidean',
+                 axis: Optional[int] = -1,
                  **kwargs):
         super().__init__(**kwargs)
         if not activation in VALID_ACTIVATIONS:

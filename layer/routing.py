@@ -1,7 +1,7 @@
 from typing import Optional
 
 import tensorflow as tf
-from einops import einsum, reduce, rearrange
+from einops import einsum, reduce
 from tensorflow import keras
 
 from layer.activation import Squash
@@ -66,9 +66,3 @@ class SelfAttentionRouter(Router):
         outputs = reduce(inputs * outputs, self.pattern_reduce, reduction='sum')
         outputs = self.activation(outputs)
         return outputs
-
-
-if __name__ == '__main__':
-    inputs = keras.layers.Input((32, 10, 16))
-    router = SelfAttentionRouter()
-    keras.Sequential([inputs, router]).summary()

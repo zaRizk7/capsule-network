@@ -5,7 +5,8 @@ from tensorflow import keras
 
 
 class MarginLoss(keras.losses.Loss):
-    def __init__(self, pos_margin: Optional[float] = 0.9, neg_margin: Optional[float] = 0.1, lambda_: Optional[float] = 0.5,
+    def __init__(self, pos_margin: Optional[float] = 0.9, neg_margin: Optional[float] = 0.1,
+                 lambda_: Optional[float] = 0.5,
                  reduction: Optional[keras.losses.Reduction] = keras.losses.Reduction.AUTO,
                  name: Optional[str] = 'margin_loss'):
         super().__init__(reduction=reduction, name=name)

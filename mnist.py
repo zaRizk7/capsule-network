@@ -1,7 +1,8 @@
-import layer
-import loss
 import tensorflow as tf
 import tensorflow_datasets as tfds
+
+import layer
+import loss
 
 tf.random.set_seed(0)
 
