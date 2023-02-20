@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 from .capsule import PrimaryCapsule, CapsuleTransform
-from .routing import DynamicRouter, SelfAttentionRouter
+from .router import DynamicRouter, SelfAttentionRouter
 from .utils import Length
 
 
