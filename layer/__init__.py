@@ -1,6 +1,8 @@
 from .capsule import PrimaryCapsule, CapsuleTransform
 from .routing import DynamicRouter, SelfAttentionRouter
+from .utils import Length
 
+import tensorflow as tf
 from tensorflow import keras
 
 from typing import Optional
@@ -17,7 +19,7 @@ class DRCapsule(keras.layers.Layer):
         self.transform = CapsuleTransform(capsules, units, kernel_initializer, kernel_regularizer, kernel_constraint)
         self.route = DynamicRouter(num_routing, activation, bias_initializer, bias_regularizer, bias_constraint)
 
-    def call(self, inputs):
+    def call(self, inputs: tf.Tensor) -> tf.Tensor: 
         outputs = self.transform(inputs)
         outputs = self.route(outputs)
         return outputs
@@ -34,7 +36,7 @@ class SACapsule(keras.layers.Layer):
         self.transform = CapsuleTransform(capsules, units, kernel_initializer, kernel_regularizer, kernel_constraint)
         self.route = SelfAttentionRouter(activation, bias_initializer, bias_regularizer, bias_constraint)
 
-    def call(self, inputs):
+    def call(self, inputs: tf.Tensor) -> tf.Tensor:
         outputs = self.transform(inputs)
         outputs = self.route(outputs)
         return outputs

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import tensorflow as tf
 from tensorflow import keras
@@ -9,7 +9,7 @@ VALID_ACTIVATIONS = ['linear', 'dr', 'sa']
 
 
 class Squash(keras.layers.Layer):
-    def __init__(self, activation: Optional[str] = 'linear', ord: Optional[int] = 2, axis: Optional[int] = -1,
+    def __init__(self, activation: Optional[str] = 'linear', ord: Optional[Union[str,int]] = 'euclidean', axis: Optional[int] = -1,
                  **kwargs):
         super().__init__(**kwargs)
         if not activation in VALID_ACTIVATIONS:
@@ -32,8 +32,8 @@ class Squash(keras.layers.Layer):
 
 
 def squash_dr(inputs: tf.Tensor, norm: tf.Tensor) -> tf.Tensor:
-    return inputs * norm / (1 + norm)
+    return inputs * norm / (1 + norm ** 2)
 
 
 def squash_sa(inputs: tf.Tensor, norm: tf.Tensor) -> tf.Tensor:
-    return (1 - 1 / norm) * inputs / norm
+    return (1 - 1 / tf.exp(norm)) * inputs / norm

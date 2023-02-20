@@ -1,7 +1,7 @@
 from typing import Optional
 
 import tensorflow as tf
-from einops import einsum, reduce
+from einops import einsum, reduce, rearrange
 from tensorflow import keras
 
 from layer.activation import Squash
@@ -18,8 +18,8 @@ class Router(keras.layers.Layer):
         self.bias_constraint = bias_constraint
 
     def build(self, input_shape) -> None:
-        _, in_capsules, out_capsules, _ = input_shape
-        self.bias = self.add_weight(name='bias', shape=(in_capsules, out_capsules, 1),
+        capsules, units = input_shape[2:]
+        self.bias = self.add_weight(name='bias', shape=(capsules, units),
                                     initializer=self.bias_initializer, regularizer=self.bias_regularizer,
                                     trainable=True, constraint=self.bias_constraint)
 
@@ -34,6 +34,7 @@ class DynamicRouter(Router):
                  bias_constraint: Optional[keras.regularizers.Regularizer] = None, **kwargs):
         super().__init__(activation, bias_initializer, bias_regularizer, bias_constraint, **kwargs)
         self.num_routing = 1 if num_routing <= 0 or num_routing is None else num_routing
+        self.pattern = '... n_in n_out d_out -> ... n_out d_out'
 
     def call(self, inputs: tf.Tensor) -> tf.Tensor:
         priors = tf.zeros_like(inputs)
@@ -44,7 +45,7 @@ class DynamicRouter(Router):
             outputs = self.activation(outputs)
             if i < self.num_routing - 1:
                 priors = priors + tf.reduce_sum(inputs * outputs, axis=-1, keepdims=True)
-        return reduce(outputs, '... n_in n_out d_out -> ... n_out d_out', reduction='mean')
+        return reduce(outputs, self.pattern, reduction='sum')
 
 
 class SelfAttentionRouter(Router):
